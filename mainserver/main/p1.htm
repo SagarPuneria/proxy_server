@@ -1,0 +1,82 @@
+
+<!-- saved from url=(0095)http://10.242.52.1:8080/eSikshak/other/Courses/Course102/Module17/Topic16/CourseMaterial/p1.cpp -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></head><body><pre style="word-wrap: break-word; white-space: pre-wrap;">//Write a program which uses the API �Create Process� to create two child processes which prints
+//1. Handle
+//2. Process ID
+//of that process. The parent process must wait for the two child processes to terminate.
+
+
+#include&lt;windows.h&gt;
+#include&lt;stdio.h&gt;
+
+
+void main( VOID )
+{
+    STARTUPINFO si,si1;
+    PROCESS_INFORMATION pi,pi1;
+	HANDLE arr[2];
+
+    ZeroMemory( &amp;si, sizeof(si) );
+   /*si.cb = sizeof(si);*/
+    ZeroMemory( &amp;pi, sizeof(pi) );
+	
+	ZeroMemory( &amp;si1, sizeof(si1) );
+   /* si1.cb = sizeof(si1);*/
+    ZeroMemory( &amp;pi1, sizeof(pi1) );
+
+    // Start the child process. 
+    if( !CreateProcess(L"C:\\windows\\system32\\calc.exe",   // No module name (use command line). 
+						NULL,									// Command line. 
+						NULL,							// Process handle not inheritable. 
+						NULL,								// Thread handle not inheritable. 
+						FALSE,							// Set handle inheritance to FALSE. 
+						CREATE_NEW_CONSOLE,                // No creation flags. 
+						NULL,							// Use parent's environment block. 
+						NULL,							 // Use parent's starting directory. 
+						&amp;si,							  // Pointer to STARTUPINFO structure.
+						&amp;pi )								 // Pointer to PROCESS_INFORMATION structure.
+    ) 
+    {
+        printf( "CreateProcess failed (%d).\n", GetLastError() );
+		getchar();
+        return;
+    }
+	if( !CreateProcess(L"C:\\WINDOWS\\notepad.exe",   // No module name (use command line). 
+						NULL,									// Command line. 
+						NULL,							// Process handle not inheritable. 
+						NULL,								// Thread handle not inheritable. 
+						FALSE,							// Set handle inheritance to FALSE. 
+						CREATE_NO_WINDOW,                // No creation flags. 
+						NULL,							// Use parent's environment block. 
+						NULL,							 // Use parent's starting directory. 
+						&amp;si1,							  // Pointer to STARTUPINFO structure.
+						&amp;pi1 )								 // Pointer to PROCESS_INFORMATION structure.
+    ) 
+    {
+        printf( "CreateProcess failed (%d).\n", GetLastError() );
+        return;
+    }
+	
+    // Wait until child process exits.
+	arr[0]=pi.hProcess;
+	arr[1]=pi1.hProcess;
+	WaitForMultipleObjects(2,arr,TRUE,INFINITE); 
+    ///WaitForSingleObject( pi.hProcess, INFINITE );
+	printf("handle = %d\n",pi.hProcess);
+	printf("ID = %d\n",pi.dwProcessId);
+	
+	//getchar();
+
+ 
+	//WaitForSingleObject( pi1.hProcess, INFINITE );
+	printf("handle = %d\n",pi1.hProcess);
+	printf("ID = %d\n",pi1.dwProcessId);
+
+	//getchar();
+
+    // Close process and thread handles. 
+    CloseHandle( pi.hProcess );
+    CloseHandle( pi.hThread );
+	CloseHandle( pi1.hProcess );
+    CloseHandle( pi1.hThread );
+}</pre></body></html>

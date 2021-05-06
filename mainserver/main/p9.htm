@@ -1,0 +1,55 @@
+
+<!-- saved from url=(0095)http://10.242.52.1:8080/eSikshak/other/Courses/Course102/Module17/Topic16/CourseMaterial/p9.cpp -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></head><body><pre style="word-wrap: break-word; white-space: pre-wrap;">#include&lt;windows.h&gt;
+#include&lt;stdio.h&gt;
+	
+	HANDLE hThread[2];
+
+DWORD WINAPI threadfunction(LPVOID lpParameter)
+{	
+	
+	int *i = (int *)lpParameter;
+		printf("Inside the first thread %d\n",*i);
+		Sleep(5000);
+				
+	return 0;
+}
+
+DWORD WINAPI threadfunction1(LPVOID lpParameter)
+{	
+	int i;
+		printf("Inside the second  thread after 5 sec first procc win resume\n");
+		for(i = 1;i&lt;6;i++)
+		{
+			printf("%8d sec..\n",i);
+		Sleep(1000);
+		}
+
+		ResumeThread(hThread[0]);
+		
+				
+	return 0;
+}
+
+int main()
+{
+	DWORD id,para=100,id1;
+	
+	printf("creating first thread using CREATE_SUSPEND  flag\n");
+
+	hThread[0] = CreateThread(NULL,0,threadfunction,&amp;para,CREATE_SUSPENDED ,&amp;id);
+
+	printf("creating second thread \n");
+
+	hThread[1] = CreateThread(NULL,0,threadfunction1,&amp;para,0,&amp;id1);	
+
+	printf("Parent process\n");
+
+	WaitForMultipleObjects(2,hThread,TRUE,INFINITE);
+
+	Sleep (1000);
+	return 0;
+}
+
+
+</pre></body></html>
